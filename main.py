@@ -24,6 +24,7 @@ w_width, w_height = 1280,720
 def window_resize(window, width, height):
     glViewport(0, 0, width, height)
 
+#**********************************Prespective_projection_function******************************
 def prespecive_projection(shader,zoom,w_width, w_height, x ,y ,z):
     view = pyrr.matrix44.create_from_translation(pyrr.Vector3([x , y, z]))
     projection = pyrr.matrix44.create_perspective_projection_matrix(zoom , w_width / w_height, 0.1, 100.0)
@@ -36,8 +37,9 @@ def prespecive_projection(shader,zoom,w_width, w_height, x ,y ,z):
     glUniformMatrix4fv(view_loc, 1, GL_FALSE, view)
     glUniformMatrix4fv(proj_loc, 1, GL_FALSE, projection)
     glUniformMatrix4fv(model_loc, 1, GL_FALSE, model)
+#**********************************Prespective_projection_function_END***************************
 
-
+#**********************************Mouse callBack function***************************************
 def mouse_callback(window, xpos, ypos):
     global first_mouse, lastX, lastY
     global i_y,rot_y,i_x,rot_x,zoom,  w_width, w_height,shift_left ,x ,y,key_pressed
@@ -47,8 +49,8 @@ def mouse_callback(window, xpos, ypos):
         lastY = ypos
         first_mouse = False
 
-    xoffset = xpos - lastX
-    yoffset = lastY - ypos
+    xoffset = xpos - lastX #Recent change in postion of pixel in x-direction
+    yoffset = lastY - ypos #Recent change in postion of pixel in y-direction
 
     lastX = xpos
     lastY = ypos
@@ -64,13 +66,18 @@ def mouse_callback(window, xpos, ypos):
         rot_x = pyrr.Matrix44.from_x_rotation(0.002 * i_y )
 
     print("xoffset==>"+str(xoffset)+" yoffset"+str(yoffset))
+#**********************************Mouse_CallBack_Function_END***************************************
+
+#**********************************Mouse_Scroll_callback_function***************************************
 
 def scroll_callback(window , xpos ,ypos):
     global zoom
     ypos = -ypos
     zoom += ypos 
     print("xpos"+str(xpos)+"ypos"+str(ypos))
-       
+#**********************************Mouse_Scroll_callback_function_END***************************************
+
+#**********************************Object_Loading_Function**************************************************
 def object_load(model_ID ,VBO):
     texture_offset = len(model_ID.vertex_index)*12
     normal_offset = (texture_offset + len(model_ID.texture_index)* 8)
@@ -94,8 +101,9 @@ def object_load(model_ID ,VBO):
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, model_ID.model.itemsize * 3, ctypes.c_void_p(normal_offset))
     glEnableVertexAttribArray(2)
 
+#**********************************Object_Loading_Function_END**************************************************
 
-
+#**********************************MAIN_Function_Starts**************************************************
 def main():
     global x ,y
     z = -9
@@ -109,7 +117,7 @@ def main():
         return
     
     w_width, w_height = 1280,720
-    glfw.window_hint(glfw.RESIZABLE, GL_FALSE)
+   # glfw.window_hint(glfw.RESIZABLE, GL_FALSE)
     window = glfw.create_window(w_width, w_height, "Agro_Doctor", None, None)
 
     if not window:
@@ -186,7 +194,7 @@ def main():
     glBindVertexArray(VBO[0])
     prespecive_projection(shader,50, w_width, w_height, x,y,-2)
     
-    o = 372
+    o = 1
     
     mixer.music.play(2)
     i_yy = 0
@@ -242,4 +250,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-
+#**********************************Main_Function_END**************************************************
